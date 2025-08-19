@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - Budget Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <h2>Sign Up</h2>
+      <form id="signup-form">
+        <input type="email" id="signup-email" placeholder="Email" required>
+        <input type="password" id="signup-password" placeholder="Password" required>
+        <button type="submit">Sign Up</button>
+      </form>
+      <p id="signup-error" class="error-message"></p>
+      <p>Already have an account? <a href="index.html">Login here</a></p>
+    </div>
+  </div>
+  <script>
+    // Use the same config as app.js
+    const firebaseConfig = {
+      apiKey: "AIzaSyCrDlkIw39Zil7gZQILwpIa7f7ITXeLdS0",
+      authDomain: "budgertracker.firebaseapp.com",
+      projectId: "budgertracker",
+      storageBucket: "budgertracker.firebasestorage.app",
+      messagingSenderId: "387176020743",
+      appId: "1:387176020743:web:2ce32ef9f6efcdcbde23a2"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const signupForm = document.getElementById('signup-form');
+    const signupError = document.getElementById('signup-error');
+
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      signupError.textContent = '';
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
+        window.location.href = 'index.html'; // Redirect to login after signup
+      } catch (error) {
+        signupError.textContent = getFriendlyAuthError(error.code);
+      }
+    });
+
+    function getFriendlyAuthError(code) {
+      const errors = {
+        'auth/email-already-in-use': 'Email already in use',
+        'auth/invalid-email': 'Invalid email address',
+        'auth/weak-password': 'Password should be at least 6 characters',
+      };
+      return errors[code] || 'Sign up failed. Please try again.';
+    }
+  </script>
+</body>
+</html>
